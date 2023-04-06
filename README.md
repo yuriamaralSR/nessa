@@ -9,7 +9,7 @@ Este projeto foi desenvolvido com o intuito de colocar em pratica os conteúdos 
 ## Funcionalidades:
 
     - Busca de conceitos de programação para iniciantes;
-    - Busca de tópicos em documentações de tecnologias (Python, Java e C++);
+    - Busca de documentações de tecnologias (Python, Java e C++);
     - Busca de exercícios práticos de algoritmos;
     - Busca de tutoriais em vídeo;
     - Abertura do VSCode para começar a praticar.
