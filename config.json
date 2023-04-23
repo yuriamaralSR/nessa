@@ -1,0 +1,30 @@
+{
+  "comandos": [
+  {
+    "nome": "buscar",
+    "objeto": [
+        "sobre",
+        "exercicios",
+        "exercicio",
+        "praticar",
+        "tutoriais",
+        "tutorial",
+        "videos",
+        "video"
+      ],
+  "parametros": ""
+  },
+  {
+    "nome": "abrir",
+    "objeto": [
+        "documentacao",
+        "vscode"
+      ],
+    "parametros": [
+      "python",
+      "java",
+      "c++"
+    ]
+    }
+  ]
+}
