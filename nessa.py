@@ -1,11 +1,13 @@
 import json
 from time import sleep
+import webbrowser
 import speech_recognition as sr
 from nltk import word_tokenize
 from nltk.corpus import stopwords
 from unidecode import unidecode
 import pyttsx3
 import keyboard
+import wikipedia
 
 ARQUIVO_CONFIG = "D:/ws_python/nessa/config.json"
 NOME_DO_ASSISTENTE = 'nessa'
@@ -83,6 +85,11 @@ def filtrar_tokens(tokens, palavras_de_parada):
 
     return tokens_filtrados
 
+def extrair_parametro(tokens):
+    parametro = tokens[3:]
+
+    return parametro
+
 
 def validar_comando(tokens, nome_do_assistente, comandos):
     validado, modulo, objeto  = False, None, None
@@ -91,24 +98,97 @@ def validar_comando(tokens, nome_do_assistente, comandos):
         if nome_do_assistente == tokens[0]:
             modulo = tokens[1]
             objeto = unidecode(tokens[2])
-            parametro = tokens[3:]
             
-        for modulos in comandos:
-            if modulo == modulos["modulo"]:
-                if objeto in modulos["objeto"]:
-                    print(objeto)
+        for chaves in comandos:
+            if modulo == chaves["modulo"]:
+                if objeto in chaves["objeto"]:
+                    parametro = chaves["parametros"]
+                    parametro = extrair_parametro(tokens)
+                    validado = True
+    else:
+        falar('O comando não foi validado!')
 
-    return validado
+    return validado, modulo, objeto, parametro
+
+def buscar_conceito(parametro):
+    wikipedia.set_lang('pt')
+    try:
+        pagina = wikipedia.page(parametro)
+        conceito = wikipedia.summary(parametro)
+        url = pagina.url
+
+    except wikipedia.exceptions.DisambiguationError as e:
+        falar(f"Não foi possível encontrar uma definição precisa para '{parametro}'.")
+        falar("Por favor, tente especificar sua pesquisa com mais detalhes ou escolha um dos seguintes termos:")
+        for i, termo in enumerate(e.options):
+            print(f"{i + 1}. {termo}")
+    return conceito, url
+
+def buscar_exercicio(parametros):
+    url = "https://google.com"
+    webbrowser.get('windows-default').open_new(f'{url}/search?q=exercício+{parametros}')
+
+def buscar_video(parametros):
+    url = "https://youtube.com"
+    webbrowser.get('windows-default').open_new(f'{url}/search?q={parametros}')
+
+def abrir_documentacao(parametro):
+    if parametro == 'java':
+        url = "https://docs.python.org/3/"
+        webbrowser.get(url)
+    elif parametro == 'python':
+        ...
+    elif parametro == 'c++':
+        ...
+    
+
+def verificar_comando(objeto, parametro):
+    veja_mais = ''
+    if objeto in "sobre":
+        if len(parametro) >= 1:
+            parametros = " ".join(parametro)
+            executar, url = buscar_conceito(parametros)
+            veja_mais = (f'Veja mais em: {url}')
+        else:
+            executar, url = buscar_conceito(parametros)
+            veja_mais = (f'Veja mais em: {url}')
+    
+    elif objeto in {'tutoriais', 'tutorial', 'videos', 'video'}:
+        if len(parametro) >= 1:
+            parametros = " ".join(parametro)
+            executar = buscar_video(parametros)
+    elif objeto in {"exercicios", "exercicio"}:
+        if len(parametro) >= 1:
+            parametros = " ".join(parametro)
+            executar = buscar_exercicio(parametros)
+    elif objeto in 'documentacao':
+        if len(parametro) >= 1:
+            parametros = " ".join(parametro)
+            executar = abrir_documentacao(parametros)
+    else:
+        ...
+    return executar, veja_mais
+
+def executar_comando(modulo, objeto, parametro):
+    if parametro != []:
+        falar(f"Executando o comando... {modulo} {objeto} {parametro}")
+        executar, veja_mais = verificar_comando(objeto, parametro)
+        falar(executar)
+        falar(veja_mais)
+
+    else:
+        falar(f"Executando o comando... {modulo} {objeto}")
 
 if __name__ == '__main__':
     iniciou, reconhecedor, nessa_diz, nome_do_assistente, palavras_de_parada, comandos = iniciar()
     boas_vindas = "Olá sou a Nêssa tudo bem? Estou aqui para lhe ajudar em seus estudos de programação."
 
     if iniciou:
-        tokens = tokenizar('nessa buscar exercícios de programação')
-        tokens_filtrados = filtragem_tokens(tokens, palavras_de_parada)
-        print(tokens_filtrados)
-        valido = validar_comando(tokens_filtrados, nome_do_assistente, comandos)
+        tokens = tokenizar('nessa abrir documentacao python')
+        tokens_filtrados = filtrar_tokens(tokens, palavras_de_parada)
+        validado, modulo, objeto, parametro  = validar_comando(tokens_filtrados, nome_do_assistente, comandos)
+        if validado:
+            executar_comando(modulo, objeto, parametro)
         #falar(boas_vindas)
         # while True:
         #     sleep(0.05)

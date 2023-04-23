@@ -2,4 +2,8 @@ pyttsx3
 SpeechRecognition
 regex
 nltk
-pyaudio 
+PyAudio
+keyboard
+Unidecode
+requests
+wikipedia
