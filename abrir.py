@@ -12,7 +12,7 @@ def atuar_modulo_abrir(modulo, objeto, parametro):
             elif parametro == ['python']:
                 webbrowser.get('windows-default').open_new("https://docs.python.org/3/")
                 executou = True
-            elif parametro == ['c++']:
+            elif parametro == ['c++', 'c']:
                 webbrowser.get('windows-default').open_new("https://en.cppreference.com/w/")
                 executou = True
         elif objeto in ["vscode", "vs code", "vs"]:

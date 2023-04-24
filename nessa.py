@@ -10,7 +10,7 @@ from buscar import *
 from abrir import *
 
 ARQUIVO_CONFIG = "D:/ws_python/nessa/config.json"
-NOME_DO_ASSISTENTE = 'nessa'
+NOME_DO_ASSISTENTE = ['nessa', 'moça']
 ATUADORES = [
     {
         "atuar": atuar_modulo_buscar,
@@ -59,8 +59,6 @@ def ouvir(reconhecedor):
             falar("Estou ouvindo...")
             fala_usuario = reconhecedor.listen(fonte_de_audio, timeout = 5)
             ouviu = True
-        except sr.UnknownValueError:
-            falar("Desculpe, não entendi")
         except sr.RequestError:
             falar("Desculpe, o serviço está offline")
 
@@ -141,15 +139,25 @@ if __name__ == '__main__':
         falar(SAUDACAO)
         falar(INSTRUCAO)
         while True:
-            sleep(0.05)
-            if keyboard.is_pressed('ctrl+alt+shift+n'):
-                ouviu, fala_usuario = ouvir(reconhecedor)
-                if ouviu:
-                    transcreveu, transcricao = trancrever(fala_usuario, reconhecedor)
-                    if transcreveu:
-                        tokens = tokenizar(transcricao)
-                        tokens_filtrados = filtrar_tokens(tokens, palavras_de_parada)
-                        validado, modulo, objeto, parametro  = validar_comando(tokens_filtrados, nome_do_assistente, comandos)
-                        if validado:
-                            executar_comando(modulo, objeto, parametro)
-            sleep(0.05)
+            try:
+                sleep(0.05)
+                if keyboard.is_pressed('ctrl+alt+shift+n'):
+                    ouviu, fala_usuario = ouvir(reconhecedor)
+                    
+                    if ouviu:
+                        transcreveu, transcricao = trancrever(fala_usuario, reconhecedor)
+                        if transcreveu:
+                            tokens = tokenizar(transcricao)
+                            tokens_filtrados = filtrar_tokens(tokens, palavras_de_parada)
+                            validado, modulo, objeto, parametro  = validar_comando(tokens_filtrados, nome_do_assistente, comandos)
+                            if validado:
+                                executar_comando(modulo, objeto, parametro)
+                            else:
+                                falar("Desculpe, comando não cadastrado.")
+                sleep(0.05)
+                falar(INSTRUCAO)
+            except:
+                falar("Desculpe, não te ouvi ou o comando ainda não foi cadastrado. Por favor repita o comando seguindo o padrão:")
+                falar('''Nome da assistente, seguido das palavras chaves [1]buscar + o que deseja buscar ou [2]abrir + documetação + nome da linguagem que deseja(java, python, c++) ou [2]abrir + vscode''')
+                falar(INSTRUCAO)
+                continue
