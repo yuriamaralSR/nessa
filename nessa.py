@@ -10,7 +10,7 @@ from buscar import *
 from abrir import *
 
 ARQUIVO_CONFIG = "D:/ws_python/nessa/config.json"
-NOME_DO_ASSISTENTE = ['nessa', 'moça']
+NOME_DO_ASSISTENTE = ['nessa']
 ATUADORES = [
     {
         "atuar": atuar_modulo_buscar,
@@ -135,29 +135,30 @@ if __name__ == '__main__':
     iniciou, reconhecedor, nessa_diz, nome_do_assistente, palavras_de_parada, comandos = iniciar()
     SAUDACAO = "Olá sou a Nêssa tudo bem? Estou aqui para lhe ajudar em seus estudos de programação."
     INSTRUCAO = "Pressione 'ctrl+alt+shift+n' para começar."
+    DESPEDIDA = "Espero ter ajudado! Fique com Deus e até mais!"
     if iniciou:
         falar(SAUDACAO)
         falar(INSTRUCAO)
         while True:
-            try:
-                sleep(0.05)
-                if keyboard.is_pressed('ctrl+alt+shift+n'):
-                    ouviu, fala_usuario = ouvir(reconhecedor)
-                    
-                    if ouviu:
-                        transcreveu, transcricao = trancrever(fala_usuario, reconhecedor)
-                        if transcreveu:
-                            tokens = tokenizar(transcricao)
-                            tokens_filtrados = filtrar_tokens(tokens, palavras_de_parada)
-                            validado, modulo, objeto, parametro  = validar_comando(tokens_filtrados, nome_do_assistente, comandos)
-                            if validado:
-                                executar_comando(modulo, objeto, parametro)
-                            else:
-                                falar("Desculpe, comando não cadastrado.")
-                sleep(0.05)
-                falar(INSTRUCAO)
-            except:
-                falar("Desculpe, não te ouvi ou o comando ainda não foi cadastrado. Por favor repita o comando seguindo o padrão:")
-                falar('''Nome da assistente, seguido das palavras chaves [1]buscar + o que deseja buscar ou [2]abrir + documetação + nome da linguagem que deseja(java, python, c++) ou [2]abrir + vscode''')
-                falar(INSTRUCAO)
-                continue
+            sleep(0.05)
+            if keyboard.is_pressed('ctrl+alt+shift+n'):
+                #try:
+                ouviu, fala_usuario = ouvir(reconhecedor)
+                if ouviu:
+                    transcreveu, transcricao = trancrever(fala_usuario, reconhecedor)
+                    if transcreveu:
+                        tokens = tokenizar(transcricao)
+                        tokens_filtrados = filtrar_tokens(tokens, palavras_de_parada)
+                        validado, modulo, objeto, parametro  = validar_comando(tokens_filtrados, nome_do_assistente, comandos)
+                        if validado:
+                            executar_comando(modulo, objeto, parametro)
+                    sleep(0.05)
+                    falar(INSTRUCAO)
+                # except KeyboardInterrupt:
+                #     falar(DESPEDIDA)
+                #     break
+                # except:
+                #     falar("Desculpe, não te ouvi ou o comando ainda não foi cadastrado. Por favor repita o comando seguindo o padrão:")
+                #     falar('''Nome da assistente, seguido das palavras chaves [1]buscar + o que deseja buscar ou [2]abrir + documetação + nome da linguagem que deseja(java, python, c++) ou [2]abrir + vscode''')
+                #     falar(INSTRUCAO)
+                #     continue
