@@ -17,12 +17,11 @@
       "modulo": "abrir",
       "objeto": [
           "documentacao",
-          "vscode"
+          "vscode",
+          "vs"
         ],
       "parametros": [
-        "python",
-        "java",
-        "c++"
+        ""
       ]
     }
   ]

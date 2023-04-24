@@ -54,10 +54,9 @@ def ouvir(reconhecedor):
     ouviu = False
 
     with sr.Microphone() as fonte_de_audio:
-        reconhecedor.adjust_for_ambient_noise(fonte_de_audio)
-        
-        falar("Estou ouvindo...")
         try:
+            reconhecedor.adjust_for_ambient_noise(fonte_de_audio)
+            falar("Estou ouvindo...")
             fala_usuario = reconhecedor.listen(fonte_de_audio, timeout = 5)
             ouviu = True
         except sr.UnknownValueError:
@@ -95,7 +94,9 @@ def filtrar_tokens(tokens, palavras_de_parada):
     return tokens_filtrados
 
 def extrair_parametro(tokens):
+    parametro = ""
     parametro = tokens[3:]
+    
 
     return parametro
 
@@ -106,15 +107,17 @@ def validar_comando(tokens, nome_do_assistente, comandos):
     if len(tokens) >= 3:
         if nome_do_assistente == tokens[0]:
             modulo = tokens[1]
+            if len(tokens[2]) == 2:
+                objeto = tokens[2:]
             objeto = unidecode(tokens[2])
             
         for chaves in comandos:
             if modulo == chaves["modulo"]:
                 if objeto in chaves["objeto"]:
                     parametro = chaves["parametros"]
-                    print(parametro)
-                    parametro = extrair_parametro(tokens)
-                    print(parametro)
+                    if parametro == [""]:
+                        parametro = extrair_parametro(tokens)
+
                     validado = True
     else:
         falar('O comando não foi validado!')
@@ -122,6 +125,8 @@ def validar_comando(tokens, nome_do_assistente, comandos):
     return validado, modulo, objeto, parametro
 
 def executar_comando(modulo, objeto, parametro):
+    if parametro == "":
+        falar(f"Executando o comando: {modulo} {objeto} ")
     falar(f"Executando o comando: {modulo} {objeto} {parametro}")
     for atuador in ATUADORES:
         atuou = atuador["atuar"](modulo, objeto, parametro)
@@ -130,24 +135,21 @@ def executar_comando(modulo, objeto, parametro):
 
 if __name__ == '__main__':
     iniciou, reconhecedor, nessa_diz, nome_do_assistente, palavras_de_parada, comandos = iniciar()
-    boas_vindas = "Olá sou a Nêssa tudo bem? Estou aqui para lhe ajudar em seus estudos de programação."
-
+    SAUDACAO = "Olá sou a Nêssa tudo bem? Estou aqui para lhe ajudar em seus estudos de programação."
+    INSTRUCAO = "Pressione 'ctrl+alt+shift+n' para começar."
     if iniciou:
-        tokens = tokenizar('nessa buscar exercicio de if-else')
-        tokens_filtrados = filtrar_tokens(tokens, palavras_de_parada)
-        validado, modulo, objeto, parametro  = validar_comando(tokens_filtrados, nome_do_assistente, comandos)
-        if validado:
-            executar_comando(modulo, objeto, parametro)
-        #falar(boas_vindas)
-        # while True:
-        #     sleep(0.05)
-        #     if keyboard.is_pressed('ctrl+alt+shift+n'):
-                
-        #         ouviu, fala_usuario = ouvir(reconhecedor)
-                
-        #         if ouviu:
-        #             transcreveu, transcricao = trancrever(fala_usuario, reconhecedor)
-        #             if transcreveu:
-        #                 tokens = tokenizar(transcricao)
-        #                 valido = validar_comando(tokens, nome_do_assistente, comandos)
-        #     sleep(0.05)
+        falar(SAUDACAO)
+        falar(INSTRUCAO)
+        while True:
+            sleep(0.05)
+            if keyboard.is_pressed('ctrl+alt+shift+n'):
+                ouviu, fala_usuario = ouvir(reconhecedor)
+                if ouviu:
+                    transcreveu, transcricao = trancrever(fala_usuario, reconhecedor)
+                    if transcreveu:
+                        tokens = tokenizar(transcricao)
+                        tokens_filtrados = filtrar_tokens(tokens, palavras_de_parada)
+                        validado, modulo, objeto, parametro  = validar_comando(tokens_filtrados, nome_do_assistente, comandos)
+                        if validado:
+                            executar_comando(modulo, objeto, parametro)
+            sleep(0.05)

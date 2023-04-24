@@ -19,3 +19,4 @@ Este projeto foi desenvolvido com o intuito de colocar em pratica os conteúdos 
     - SpeechRecognition;
     - pyttsx3;
     - NLTK.
+    - Wikipedia
