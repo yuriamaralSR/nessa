@@ -10,7 +10,7 @@ from buscar import *
 from abrir import *
 
 ARQUIVO_CONFIG = "D:/ws_python/nessa/config.json"
-NOME_DO_ASSISTENTE = ['nessa']
+NOME_DO_ASSISTENTE = 'nessa'
 ATUADORES = [
     {
         "atuar": atuar_modulo_buscar,
@@ -59,6 +59,8 @@ def ouvir(reconhecedor):
             falar("Estou ouvindo...")
             fala_usuario = reconhecedor.listen(fonte_de_audio, timeout = 5)
             ouviu = True
+        except sr.UnknownValueError:
+            falar("Desculpe, não entendi")
         except sr.RequestError:
             falar("Desculpe, o serviço está offline")
 
@@ -94,13 +96,12 @@ def filtrar_tokens(tokens, palavras_de_parada):
 def extrair_parametro(tokens):
     parametro = ""
     parametro = tokens[3:]
-    
 
     return parametro
 
 
 def validar_comando(tokens, nome_do_assistente, comandos):
-    validado, modulo, objeto  = False, None, None
+    validado, modulo, objeto, parametro  = False, None, None, ""
 
     if len(tokens) >= 3:
         if nome_do_assistente == tokens[0]:
@@ -113,8 +114,7 @@ def validar_comando(tokens, nome_do_assistente, comandos):
             if modulo == chaves["modulo"]:
                 if objeto in chaves["objeto"]:
                     parametro = chaves["parametros"]
-                    if parametro == [""]:
-                        parametro = extrair_parametro(tokens)
+                    parametro = extrair_parametro(tokens)
 
                     validado = True
     else:
@@ -123,26 +123,27 @@ def validar_comando(tokens, nome_do_assistente, comandos):
     return validado, modulo, objeto, parametro
 
 def executar_comando(modulo, objeto, parametro):
+    executou = False
     if parametro == "":
         falar(f"Executando o comando: {modulo} {objeto} ")
     falar(f"Executando o comando: {modulo} {objeto} {parametro}")
     for atuador in ATUADORES:
         atuou = atuador["atuar"](modulo, objeto, parametro)
         if atuou:
+            executou = True
             break
+    return executou
 
 if __name__ == '__main__':
     iniciou, reconhecedor, nessa_diz, nome_do_assistente, palavras_de_parada, comandos = iniciar()
     SAUDACAO = "Olá sou a Nêssa tudo bem? Estou aqui para lhe ajudar em seus estudos de programação."
     INSTRUCAO = "Pressione 'ctrl+alt+shift+n' para começar."
-    DESPEDIDA = "Espero ter ajudado! Fique com Deus e até mais!"
     if iniciou:
         falar(SAUDACAO)
         falar(INSTRUCAO)
         while True:
             sleep(0.05)
             if keyboard.is_pressed('ctrl+alt+shift+n'):
-                #try:
                 ouviu, fala_usuario = ouvir(reconhecedor)
                 if ouviu:
                     transcreveu, transcricao = trancrever(fala_usuario, reconhecedor)
@@ -151,14 +152,5 @@ if __name__ == '__main__':
                         tokens_filtrados = filtrar_tokens(tokens, palavras_de_parada)
                         validado, modulo, objeto, parametro  = validar_comando(tokens_filtrados, nome_do_assistente, comandos)
                         if validado:
-                            executar_comando(modulo, objeto, parametro)
-                    sleep(0.05)
-                    falar(INSTRUCAO)
-                # except KeyboardInterrupt:
-                #     falar(DESPEDIDA)
-                #     break
-                # except:
-                #     falar("Desculpe, não te ouvi ou o comando ainda não foi cadastrado. Por favor repita o comando seguindo o padrão:")
-                #     falar('''Nome da assistente, seguido das palavras chaves [1]buscar + o que deseja buscar ou [2]abrir + documetação + nome da linguagem que deseja(java, python, c++) ou [2]abrir + vscode''')
-                #     falar(INSTRUCAO)
-                #     continue
+                            executou = executar_comando(modulo, objeto, parametro)
+            sleep(0.05)

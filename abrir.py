@@ -15,6 +15,8 @@ def atuar_modulo_abrir(modulo, objeto, parametro):
             elif parametro == ['c++', 'c']:
                 webbrowser.get('windows-default').open_new("https://en.cppreference.com/w/")
                 executou = True
+            else:
+                executou = False
         elif objeto in ["vscode", "vs code", "vs"]:
             subprocess.Popen(['cmd', '/c', 'start', 'code', '-n'])
             executou = True
