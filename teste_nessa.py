@@ -22,7 +22,7 @@ class TesteNomeAssistente(unittest.TestCase):
     def setUp(self):
         iniciou, _, _, nome_do_assistente, palavras_de_parada, comandos = iniciar()
 
-    def reconhecer_nome_teste(self):
+    def testar_reconhecer_nome(self):
         comando = processar_audio(CHAMANDO_NOME_CORRETO)
         comando = comando.split()
 
@@ -33,7 +33,7 @@ class TesteNomeAssistente(unittest.TestCase):
             print(f"nome do assistente: {nome_do_assistente}")
         self.assertIn("nessa", nome_do_assistente)
     
-    def nao_reconhecer_outro_nome_teste(self):
+    def testar_nao_reconhecer_outro_nome(self):
         comando = processar_audio(CHAMANDO_NOME_INCORRETO)
         comando = comando.split()
 
@@ -49,7 +49,7 @@ class TesteModuloBuscar(unittest.TestCase):
     def setUp(self):
         iniciou, _, _, nome_do_assistente, palavras_de_parada, comandos = iniciar()
 
-    def buscar_sobre_teste(self):
+    def testar_buscar_sobre(self):
         comando = processar_audio(BUSCAR_SOBRE)
         print(f"comando reconhecido: {comando}")
 
@@ -62,7 +62,7 @@ class TesteModuloBuscar(unittest.TestCase):
 
         self.assertTrue(executou)
 
-    def buscar_exercico_teste(self):
+    def testar_buscar_exercico(self):
         comando = processar_audio(BUSCAR_EXERCICIO)
         print(f"comando reconhecido: {comando}")
 
@@ -75,7 +75,7 @@ class TesteModuloBuscar(unittest.TestCase):
 
         self.assertTrue(executou)
 
-    def buscar_exercicos_teste(self):
+    def testar_buscar_exercicos(self):
         comando = processar_audio(BUSCAR_EXERCICIOS)
         print(f"comando reconhecido: {comando}")
 
@@ -87,7 +87,7 @@ class TesteModuloBuscar(unittest.TestCase):
 
         self.assertTrue(executou)
 
-    def buscar_tutorial_teste(self):
+    def testar_buscar_tutorial(self):
         comando = processar_audio(BUSCAR_TUTORIAL)
         print(f"comando reconhecido: {comando}")
 
@@ -99,7 +99,7 @@ class TesteModuloBuscar(unittest.TestCase):
 
         self.assertTrue(executou)
 
-    def buscar_tutoriais_teste(self):
+    def testar_buscar_tutoriais(self):
         comando = processar_audio(BUSCAR_TUTORIAIS)
         print(f"comando reconhecido: {comando}")
 
@@ -111,7 +111,7 @@ class TesteModuloBuscar(unittest.TestCase):
 
         self.assertTrue(executou)
 
-    def buscar_video_teste(self):
+    def testar_buscar_video(self):
         comando = processar_audio(BUSCAR_VIDEO)
         print(f"comando reconhecido: {comando}")
 
@@ -123,7 +123,7 @@ class TesteModuloBuscar(unittest.TestCase):
 
         self.assertTrue(executou)
 
-    def buscar_videos_teste(self):
+    def testar_buscar_videos(self):
         comando = processar_audio(BUSCAR_VIDEOS)
         print(f"comando reconhecido: {comando}")
 
@@ -140,7 +140,7 @@ class TesteModuloAbrir(unittest.TestCase):
     def setUp(self):
         iniciar()
 
-    def abrir_documentacao_cpp_teste(self):
+    def testar_abrir_documentacao_cpp(self):
         comando = processar_audio(ABRIR_DOCUMENTACAO_CPP)
         print(f"comando reconhecido: {comando}")
 
@@ -152,7 +152,7 @@ class TesteModuloAbrir(unittest.TestCase):
 
         self.assertTrue(executou)
 
-    def abrir_documentacao_java_teste(self):
+    def testar_abrir_documentacao_java(self):
         comando = processar_audio(ABRIR_DOCUMENTACAO_JAVA)
         print(f"comando reconhecido: {comando}")
 
@@ -164,7 +164,7 @@ class TesteModuloAbrir(unittest.TestCase):
 
         self.assertTrue(executou)
 
-    def abrir_documentacao_python_teste(self):
+    def testar_abrir_documentacao_python(self):
         comando = processar_audio(ABRIR_DOCUMENTACAO_PYTHON)
         print(f"comando reconhecido: {comando}")
 
@@ -176,7 +176,7 @@ class TesteModuloAbrir(unittest.TestCase):
 
         self.assertTrue(executou)
 
-    def abrir_vscode_teste(self):
+    def testar_abrir_vscode(self):
         comando = processar_audio(ABRIR_VSCODE)
         print(f"comando reconhecido: {comando}")
 
